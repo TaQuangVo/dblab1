@@ -9,7 +9,7 @@ import kth.se.dblab1.view.BooksPane;
 
 /**
  * Application start up.
- *
+ *hej tquang
  * @author anderslm@kth.se
  */
 public class Main extends Application {
