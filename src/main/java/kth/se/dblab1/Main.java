@@ -4,8 +4,13 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import kth.se.dblab1.model.BookDbMySqlImpl;
+import kth.se.dblab1.model.BooksDbException;
+import kth.se.dblab1.model.BooksDbInterface;
 import kth.se.dblab1.model.BooksDbMockImpl;
 import kth.se.dblab1.view.BooksPane;
+
+import java.sql.SQLException;
 
 /**
  * Application start up.
@@ -36,6 +41,20 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        //test code
+        BooksDbInterface db = new BookDbMySqlImpl();
+        try{
+            Boolean connected = db.connect("test");
+
+            if(connected)
+                db.disconnect();
+        } catch (BooksDbException e) {
+                e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
         launch(args);
     }
 }
