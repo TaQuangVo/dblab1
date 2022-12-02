@@ -6,6 +6,7 @@
 package kth.se.dblab1.model;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,6 +52,11 @@ public class BooksDbMockImpl implements BooksDbInterface {
             }
         }
         return result;
+    }
+
+    @Override
+    public void executeQuery(String query) throws SQLException {
+
     }
 
     private static final Book[] DATA = {

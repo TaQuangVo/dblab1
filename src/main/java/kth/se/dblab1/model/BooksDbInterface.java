@@ -1,6 +1,7 @@
 package kth.se.dblab1.model;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,7 +30,8 @@ public interface BooksDbInterface {
     public void disconnect() throws BooksDbException, SQLException;
     
     public List<Book> searchBooksByTitle(String title) throws BooksDbException;
-    
+    public void executeQuery(String query) throws SQLException;
+
     // TODO: Add abstract methods for all inserts, deletes and queries 
     // mentioned in the instructions for the assignement.
 }

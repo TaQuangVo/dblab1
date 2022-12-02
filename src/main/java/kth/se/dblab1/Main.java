@@ -44,8 +44,8 @@ public class Main extends Application {
         //test code
         BooksDbInterface db = new BookDbMySqlImpl();
         try{
-            Boolean connected = db.connect("test");
-
+            Boolean connected = db.connect("books");
+            db.executeQuery("select * from book;");
             if(connected)
                 db.disconnect();
         } catch (BooksDbException e) {

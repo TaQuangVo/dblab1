@@ -17,7 +17,6 @@ public class BookDbMySqlImpl implements BooksDbInterface{
         String user = System.getenv("env_user"); // username
         String pwd = System.getenv("env_pwd"); // password
         String endpoint = System.getenv("env_endpoint"); //link to database, database endpoint
-        database = "test"; // the name of the specific database
         String server = "jdbc:mysql://" + endpoint + ":3306/" + database + "?UseClientEnc=UTF8";
 
         try {
@@ -50,5 +49,32 @@ public class BookDbMySqlImpl implements BooksDbInterface{
     @Override
     public List<Book> searchBooksByTitle(String title) throws BooksDbException {
         return null;
+    }
+
+    public void executeQuery(String query) throws
+            SQLException {
+        try (Statement stmt = conn.createStatement()) {
+            // Execute the SQL statement
+            ResultSet rs = stmt.executeQuery(query);
+            // Get the attribute names
+            ResultSetMetaData metaData = rs.getMetaData();
+            int count = metaData.getColumnCount();
+            for (int c = 1; c <= count; c++) {
+                System.out.print(metaData.getColumnName(c) + "\t");
+            }
+            System.out.println();
+            // Get the attribute values
+            while (rs.next()) {
+                // NB! This is an example, -not- the preferred way to retrieve data.
+                // You should use methods that return a specific data type, like
+                // rs.getInt(), rs.getString() or such.
+                // It's also advisable to store each tuple (row) in an object of
+                // custom type (e.g. Employee).
+                for (int c = 1; c <= count; c++) {
+                    System.out.print(rs.getObject(c) + "\t");
+                }
+                System.out.println();
+            }
+        }
     }
 }
