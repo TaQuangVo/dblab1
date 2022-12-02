@@ -1,7 +1,7 @@
 package kth.se.dblab1.view;
 
 import kth.se.dblab1.model.Book;
-import kth.se.dblab1.model.BooksDbInterface;
+import kth.se.dblab1.db.BooksDbInterface;
 import kth.se.dblab1.model.SearchMode;
 
 import java.util.ArrayList;
@@ -34,10 +34,10 @@ public class Controller {
                         result = booksDb.searchBooksByTitle(searchFor);
                         break;
                     case ISBN:
-                        // ...
+                        result = booksDb.searchBooksByIsbn(searchFor);
                         break;
                     case Author:
-                        // ...
+                        result = booksDb.searchBooksByAuthorName(searchFor);
                         break;
                     default:
                         result= new ArrayList<>();
@@ -53,6 +53,7 @@ public class Controller {
                         "Enter a search string!", WARNING);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             booksView.showAlertAndWait("Database error.",ERROR);
         }
     }

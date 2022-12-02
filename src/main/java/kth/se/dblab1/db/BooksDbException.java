@@ -1,4 +1,4 @@
-package kth.se.dblab1.model;
+package kth.se.dblab1.db;
 
 /**
  * Representing exceptions in the BooksDb model.

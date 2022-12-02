@@ -15,7 +15,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import kth.se.dblab1.model.Book;
-import kth.se.dblab1.model.BooksDbMockImpl;
+import kth.se.dblab1.db.BooksDbInterface;
 import kth.se.dblab1.model.SearchMode;
 
 
@@ -36,7 +36,7 @@ public class BooksPane extends VBox {
 
     private MenuBar menuBar;
 
-    public BooksPane(BooksDbMockImpl booksDb) {
+    public BooksPane(BooksDbInterface booksDb) {
         final Controller controller = new Controller(booksDb, this);
         this.init(controller);
     }
@@ -48,10 +48,13 @@ public class BooksPane extends VBox {
      * @param books the books to display
      */
     public void displayBooks(List<Book> books) {
+        for(Book b : books)
+            System.out.println(b);
         booksInTable.clear();
         booksInTable.addAll(books);
     }
-    
+
+
     /**
      * Notify user on input error or exceptions.
      * 
@@ -65,7 +68,6 @@ public class BooksPane extends VBox {
     }
 
     private void init(Controller controller) {
-
         booksInTable = FXCollections.observableArrayList();
 
         // init views and event handlers

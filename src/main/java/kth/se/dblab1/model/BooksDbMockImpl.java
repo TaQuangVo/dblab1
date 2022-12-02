@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+/*
 package kth.se.dblab1.model;
 
 import java.sql.Date;
@@ -19,6 +20,8 @@ import java.util.List;
  *
  * @author anderslm@kth.se
  */
+
+/*
 public class BooksDbMockImpl implements BooksDbInterface {
 
     private final List<Book> books;
@@ -71,3 +74,4 @@ public class BooksDbMockImpl implements BooksDbInterface {
             new Book(9, "345678912", "Microserfs", new Date(2000, 1, 1)),
     };
 }
+*/

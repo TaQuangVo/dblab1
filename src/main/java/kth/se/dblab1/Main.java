@@ -4,10 +4,9 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import kth.se.dblab1.model.BookDbMySqlImpl;
-import kth.se.dblab1.model.BooksDbException;
-import kth.se.dblab1.model.BooksDbInterface;
-import kth.se.dblab1.model.BooksDbMockImpl;
+import kth.se.dblab1.db.BookDbMySqlImpl;
+import kth.se.dblab1.db.BooksDbException;
+import kth.se.dblab1.db.BooksDbInterface;
 import kth.se.dblab1.view.BooksPane;
 
 import java.sql.SQLException;
@@ -20,13 +19,13 @@ import java.sql.SQLException;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws BooksDbException {
 
-        BooksDbMockImpl booksDb = new BooksDbMockImpl(); // model
+        BooksDbInterface booksDb = new BookDbMySqlImpl(); // model
+        booksDb.connect("books");
         // Don't forget to connect to the db, somewhere...
 
         BooksPane root = new BooksPane(booksDb);
-
         Scene scene = new Scene(root, 800, 600);
 
         primaryStage.setTitle("Books Database Client");
@@ -42,18 +41,17 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         //test code
+        /*
         BooksDbInterface db = new BookDbMySqlImpl();
         try{
             Boolean connected = db.connect("books");
-            db.executeQuery("select * from book;");
-            if(connected)
-                db.disconnect();
+            db.searchBooksByGenre("genre 1");
+            //if(connected)
+                //db.disconnect();
         } catch (BooksDbException e) {
                 e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
+        */
 
         launch(args);
     }
