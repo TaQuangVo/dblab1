@@ -75,11 +75,12 @@ public class BookDbMySqlImpl implements BooksDbInterface{
     public List<Book> searchBooksByAuthorName(String authorName) throws BooksDbException {
         try (Statement stmt = conn.createStatement()) {
             // Execute the SQL statement
-            String queryString = "select * from book where id in (select book_id from writen_by where author_id = (select id from author where name = '"+authorName +"'));";
+            String queryString = "select * from book where id in (select book_id from writen_by where author_id = (select id from author where name = '"+authorName+"'));";
             PreparedStatement pstmt = conn.prepareStatement(queryString);
             ResultSet rs = pstmt.executeQuery();
             // Get the attribute names
-            return Book.map(rs);
+            List<Book> bs = Book.map(rs);
+            return bs;
         } catch (SQLException e) {
             e.printStackTrace();
         }
