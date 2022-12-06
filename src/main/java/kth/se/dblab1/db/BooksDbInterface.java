@@ -1,5 +1,6 @@
 package kth.se.dblab1.db;
 
+import kth.se.dblab1.model.Author;
 import kth.se.dblab1.model.Book;
 
 import java.sql.SQLException;
@@ -25,7 +26,7 @@ public interface BooksDbInterface {
      * @param database
      * @return true on successful connection.
      */
-    public boolean connect(String database) throws BooksDbException;
+    public void connect(String database) throws BooksDbException;
     public void disconnect() throws BooksDbException, SQLException;
     
     public List<Book> searchBooksByTitle(String title) throws BooksDbException;
@@ -33,4 +34,8 @@ public interface BooksDbInterface {
     public List<Book> searchBooksByAuthorName(String authorName) throws BooksDbException;
     public List<Book> searchBooksByRate(int rate) throws BooksDbException;
     public List<Book> searchBooksByGenre(String genre) throws BooksDbException;
+    public List<Author> getAuthorByPersonId(String personId) throws BooksDbException;
+    public void insertBookFullDetail(Book book, List<Author> authors, List<String> genre) throws BooksDbException, SQLException;
+    public int deleteByIsbn(String isbn) throws BooksDbException;
+    public int updateBookInfo(Book book) throws BooksDbException;
 }

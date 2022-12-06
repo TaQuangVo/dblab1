@@ -1,5 +1,6 @@
 package kth.se.dblab1.db;
 
+import kth.se.dblab1.model.Author;
 import kth.se.dblab1.model.Book;
 
 import java.sql.*;
@@ -9,7 +10,7 @@ public class BookDbMySqlImpl implements BooksDbInterface{
     private Connection conn = null;
 
     @Override
-    public boolean connect(String database) throws BooksDbException {
+    public void connect(String database) throws BooksDbException {
         String user = System.getenv("env_user"); // username
         String pwd = System.getenv("env_pwd"); // password
         String endpoint = System.getenv("env_endpoint"); //link to database, database endpoint
@@ -20,13 +21,10 @@ public class BookDbMySqlImpl implements BooksDbInterface{
             conn = DriverManager.getConnection(server, user, pwd);
             System.out.println("Connected!");
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new BooksDbException(e.getMessage());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return false;
+            throw new BooksDbException(e.getMessage());
         }
-        return true;
     }
 
     @Override
@@ -37,81 +35,195 @@ public class BookDbMySqlImpl implements BooksDbInterface{
             conn.close();
             System.out.println("Connection closed.");
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new BooksDbException("someting gone wtrong");
         }
     }
 
     @Override
     public List<Book> searchBooksByTitle(String title) throws BooksDbException {
-        try (Statement stmt = conn.createStatement()) {
-            // Execute the SQL statement
-            String queryString = "Select * from book where title = '" + title+"';";
-            PreparedStatement pstmt = conn.prepareStatement(queryString);
+        String queryString = "Select * from book where title like ?;";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1, title+"%");
             ResultSet rs = pstmt.executeQuery();
             // Get the attribute names
             return Book.map(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new BooksDbException(e.getMessage());
         }
-        return null;
+
     }
 
     @Override
     public List<Book> searchBooksByIsbn(String isbn) throws BooksDbException {
-        try (Statement stmt = conn.createStatement()) {
-            // Execute the SQL statement
-            String queryString = "Select * from book where isbn = '" + isbn+"';";
-            PreparedStatement pstmt = conn.prepareStatement(queryString);
+        String queryString = "Select * from book where isbn like ?;";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1, isbn+"%");
             ResultSet rs = pstmt.executeQuery();
             // Get the attribute names
             return Book.map(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new BooksDbException(e.getMessage());
         }
-        return null;
     }
 
     public List<Book> searchBooksByAuthorName(String authorName) throws BooksDbException {
-        try (Statement stmt = conn.createStatement()) {
-            // Execute the SQL statement
-            String queryString = "select * from book where id in (select book_id from writen_by where author_id = (select id from author where name = '"+authorName+"'));";
-            PreparedStatement pstmt = conn.prepareStatement(queryString);
+        String queryString = "select * from book where id in (select book_id from writen_by where author_id = (select id from author where name like ?));";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1, authorName+"%");
             ResultSet rs = pstmt.executeQuery();
             // Get the attribute names
             List<Book> bs = Book.map(rs);
             return bs;
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new BooksDbException(e.getMessage());
         }
-        return null;
     }
 
     public List<Book> searchBooksByRate(int rate) throws BooksDbException {
-        try (Statement stmt = conn.createStatement()) {
-            // Execute the SQL statement
-            String queryString = "select * from book where id in (select book_id from rate where rate = " + rate +");";
-            PreparedStatement pstmt = conn.prepareStatement(queryString);
+        String queryString = "select * from book where id in (select book_id from rate where rate = ?);";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setInt(1, rate);
             ResultSet rs = pstmt.executeQuery();
             // Get the attribute names
             return Book.map(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new BooksDbException(e.getMessage());
         }
-        return null;
     }
 
     public List<Book> searchBooksByGenre(String genre) throws BooksDbException {
-        try (Statement stmt = conn.createStatement()) {
-            // Execute the SQL statement
-            String queryString = "select * from book where id in (select book_id from genre where genre_title = '" + genre +"');";
-            PreparedStatement pstmt = conn.prepareStatement(queryString);
+        String queryString = "select * from book where id in (select book_id from genre where genre_title like ?);";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1,genre+"%");
             ResultSet rs = pstmt.executeQuery();
             // Get the attribute names
             return Book.map(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new BooksDbException(e.getMessage());
         }
-        return null;
     }
+
+    public List<Author> getAuthorByPersonId(String personId) throws BooksDbException{
+        String queryString = "select * from author where person_id = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1, personId);
+            ResultSet rs = pstmt.executeQuery();
+            // Get the attribute names
+            return Author.map(rs);
+        } catch (SQLException e) {
+            throw new BooksDbException(e.getMessage());
+        }
+    }
+
+    public int insetWritenBy(Book book, Author author) throws BooksDbException {
+        String queryString = "insert into writen_by(isbn,person_id) values (?,?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1, book.getIsbn());
+            pstmt.setString(2, author.getPersonId());
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new BooksDbException(e.getMessage());
+        }
+
+    }
+
+    public int insertAuthor(Author author) throws BooksDbException {
+        String queryString = "insert into author(name,telefon_nr,person_id) values (?,?,?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1, author.getName());
+            pstmt.setString(2, author.getTelefonNo());
+            pstmt.setString(3, author.getPersonId());
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new BooksDbException(e.getMessage());
+        }
+    }
+
+    public int insertGenre(Book book, String genreTitle) throws BooksDbException {
+        String queryString = "insert into genre(isbn, genre_title) values (?,?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1, book.getIsbn());
+            pstmt.setString(2, genreTitle);
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new BooksDbException(e.getMessage());
+        }
+    }
+
+    public int insertBook(Book book) throws BooksDbException {
+        String queryString = "insert into book(isbn, title, published, story_line) values(?,?,?,?)";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1,book.getIsbn());
+            pstmt.setString(2,book.getTitle());
+            pstmt.setDate(3, book.getPublished());
+            pstmt.setString(4,book.getStoryLine());
+            return pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new BooksDbException(e.getMessage());
+        }
+    }
+
+    public void insertBookFullDetail(Book book, List<Author> authors, List<String> genre) throws BooksDbException, SQLException {
+        String insertBookQuery = "insert into book(isbn, title, published, story_line) values(?,?,?,?)";
+        try{
+            conn.setAutoCommit(false);
+
+            //insert book
+            insertBook(book);
+
+            //insert author that are not exist
+            for (Author author : authors){
+                List<Author> auList = getAuthorByPersonId(author.getPersonId());
+                if (auList.isEmpty()) {
+                    insertAuthor(author);
+                }
+            }
+
+            for (Author author : authors){
+                insetWritenBy(book,author);
+            }
+
+            for (String g : genre){
+                insertGenre(book,g);
+            }
+
+            conn.commit();
+        } catch (BooksDbException e) {
+            if(conn != null) conn.rollback();
+            System.out.println(e.getMessage());
+            throw new BooksDbException(e.getMessage());
+        } finally {
+            if(conn != null) conn.setAutoCommit(true);
+        }
+    }
+
+    public int deleteByIsbn(String isbn) throws BooksDbException {
+        String queryString = "delete from book where isbn = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1, isbn);
+            return pstmt.executeUpdate();
+            // Get the attribute names
+        } catch (SQLException e) {
+            throw new BooksDbException(e.getMessage());
+        }
+
+    }
+
+    public int updateBookInfo(Book book) throws BooksDbException {
+        String queryString = "update book set title = ?, published = ?, story_line = ? where isbn = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
+            pstmt.setString(1, book.getTitle());
+            pstmt.setDate(2,book.getPublished());
+            pstmt.setString(3,book.getStoryLine());
+            pstmt.setString(4,book.getIsbn());
+            return pstmt.executeUpdate();
+            // Get the attribute names
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new BooksDbException(e.getMessage());
+        }
+
+    }
+
+
 }
