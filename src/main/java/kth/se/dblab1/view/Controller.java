@@ -82,6 +82,22 @@ public class Controller {
         }
     }
 
+    public void onAddSelected(){
+        BookCustom bc = new BookCustom(this);
+        bc.showAndWait();
+    }
+
+
+    public void onCreateBook(Book book,List<Author> authors ,List<String> genre) {
+        new Thread(() -> {
+            try {
+                booksDb.insertBookFullDetail(book, authors, genre);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     // TODO:
     // Add methods for all types of user interaction (e.g. via  menus).
 }
