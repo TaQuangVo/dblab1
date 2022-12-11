@@ -45,8 +45,8 @@ public class Book {
             String t_title = null;
             Date t_published = null;
             String t_storyLine = null;
-            for(int i = 1; i<metadata.getColumnCount(); i++){
-
+            for(int i = 1; i<=metadata.getColumnCount(); i++){
+                System.out.println(metadata.getColumnName(i));
                 switch (metadata.getColumnName(i)){
                     case "isbn":
                         t_isbn = result.getString(i);
@@ -72,6 +72,6 @@ public class Book {
     }
     @Override
     public String toString() {
-        return title + ", " + isbn + ", " + published.toString();
+        return title + ", " + isbn + ", " + published.toString() + ", " + storyLine;
     }
 }

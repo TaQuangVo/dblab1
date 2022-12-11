@@ -3,6 +3,7 @@ package kth.se.dblab1.view;
 import java.sql.Date;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -135,14 +136,51 @@ public class BooksPane extends VBox {
 
         Menu fileMenu = new Menu("File");
         MenuItem exitItem = new MenuItem("Exit");
+        exitItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                controller.onDisconnectSelected();
+                Platform.exit();
+            }
+        });
         MenuItem connectItem = new MenuItem("Connect to Db");
+        connectItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                controller.onConnectSelected();
+            }
+        });
         MenuItem disconnectItem = new MenuItem("Disconnect");
+        disconnectItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                controller.onDisconnectSelected();
+            }
+        });
         fileMenu.getItems().addAll(exitItem, connectItem, disconnectItem);
 
         Menu searchMenu = new Menu("Search");
         MenuItem titleItem = new MenuItem("Title");
+        titleItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                searchModeBox.setValue(SearchMode.Title);
+            }
+        });
         MenuItem isbnItem = new MenuItem("ISBN");
+        isbnItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                searchModeBox.setValue(SearchMode.ISBN);
+            }
+        });
         MenuItem authorItem = new MenuItem("Author");
+        authorItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                searchModeBox.setValue(SearchMode.Author);
+            }
+        });
         searchMenu.getItems().addAll(titleItem, isbnItem, authorItem);
 
         Menu manageMenu = new Menu("Manage");
@@ -150,11 +188,41 @@ public class BooksPane extends VBox {
         addItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                controller.onAddSelected();
+                String searchFor = searchField.getText();
+                SearchMode mode = searchModeBox.getValue();
+                controller.onAddSelected(searchFor, mode);
             }
         });
         MenuItem removeItem = new MenuItem("Remove");
+        removeItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                Book b = booksTable.getSelectionModel().getSelectedItem();
+                if(b == null)
+                    showAlertAndWait("Please select an item.", Alert.AlertType.WARNING);
+                else {
+                    String searchFor = searchField.getText();
+                    SearchMode mode = searchModeBox.getValue();
+                    controller.onRemoveSelected(b, searchFor, mode);
+                }
+            }
+        });
+
         MenuItem updateItem = new MenuItem("Update");
+        updateItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+
+            public void handle(ActionEvent actionEvent) {
+                Book b = booksTable.getSelectionModel().getSelectedItem();
+                if(b == null)
+                    showAlertAndWait("Please select an item.", Alert.AlertType.WARNING);
+                else {
+                    String searchFor = searchField.getText();
+                    SearchMode mode = searchModeBox.getValue();
+                    controller.onUpdateSecected(b, searchFor, mode);
+                }
+            }
+        });
         manageMenu.getItems().addAll(addItem, removeItem, updateItem);
 
         menuBar = new MenuBar();

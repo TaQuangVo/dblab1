@@ -29,13 +29,18 @@ public interface BooksDbInterface {
     public void connect(String database) throws BooksDbException;
     public void disconnect() throws BooksDbException, SQLException;
     
-    public List<Book> searchBooksByTitle(String title) throws BooksDbException;
-    public List<Book> searchBooksByIsbn(String isbn) throws BooksDbException;
-    public List<Book> searchBooksByAuthorName(String authorName) throws BooksDbException;
-    public List<Book> searchBooksByRate(int rate) throws BooksDbException;
-    public List<Book> searchBooksByGenre(String genre) throws BooksDbException;
-    public List<Author> getAuthorByPersonId(String personId) throws BooksDbException;
+    public List<Book> searchBooksByTitle(String title, int limit) throws BooksDbException;
+    public List<Book> searchBooksByIsbn(String isbn, int limit) throws BooksDbException;
+    public List<Book> searchBooksByAuthorName(String authorName, int limit) throws BooksDbException;
+    public List<Book> searchBooksByRate(int rate, int limit) throws BooksDbException;
+    public List<Book> searchBooksByGenre(String genre, int limit) throws BooksDbException;
+    public List<Author> getAuthorByPersonId(String personId, int limit) throws BooksDbException;
     public void insertBookFullDetail(Book book, List<Author> authors, List<String> genre) throws BooksDbException, SQLException;
-    public int deleteByIsbn(String isbn) throws BooksDbException;
+    public  List<Author> getBookAuthors(Book book, int limit) throws BooksDbException;
+    public  List<String> getBookGenres(Book book, int limit) throws BooksDbException;
+    public void updateBookFullDetail(Book book, List<Author> authors , List<String> genre) throws BooksDbException, SQLException;
+    public int insertAuthor(Author author) throws BooksDbException;
+    public List<Author> getAuthorByName(String name, int limit) throws BooksDbException;
+    public int deleteBookByIsbn(String isbn) throws BooksDbException;
     public int updateBookInfo(Book book) throws BooksDbException;
 }
