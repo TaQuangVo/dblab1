@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import kth.se.dblab1.db.BookDbMongoImpl;
 import kth.se.dblab1.db.BookDbMySqlImpl;
 import kth.se.dblab1.db.BooksDbException;
 import kth.se.dblab1.db.BooksDbInterface;
@@ -25,7 +26,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws BooksDbException, SQLException {
 
-        BooksDbInterface booksDb = new BookDbMySqlImpl(); // model
+        //BooksDbInterface booksDb = new BookDbMySqlImpl(); // model
+        BookDbMongoImpl booksDb = new BookDbMongoImpl();
         booksDb.connect("book2");
         // Don't forget to connect to the db, somewhere...
 
@@ -35,9 +37,9 @@ public class Main extends Application {
         //booksDb.insertBookFullDetail(book, List.of(au, au1), List.of("skräkt", "omamy", "humor"));
         //System.out.println(booksDb.deleteByIsbn("11101911"));
 
-        Book book_update = new Book("11101911", "hej på dig 3", new Date(2002,11,12));
-        book_update.setStoryLine("this is the story line");
-        System.out.println(booksDb.updateBookInfo(book_update));
+        //Book book_update = new Book("11101911", "hej på dig 3", new Date(2002,11,12));
+        //book_update.setStoryLine("this is the story line");
+        //System.out.println(booksDb.updateBookInfo(book_update));
 
 
 

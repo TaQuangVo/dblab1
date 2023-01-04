@@ -1,5 +1,7 @@
 package kth.se.dblab1.model;
 
+import javafx.scene.control.ButtonType;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -20,7 +22,7 @@ public class Review {
     // as well, i.e. "private ArrayList<Author> authors;"
 
 
-    public Review(int id, String isbn, String review, Date rate_at, String rate_by) {
+    public Review(int id, int rate, String isbn, String review, Date rate_at, String rate_by) {
         this.id = id;
         this.isbn = isbn;
         this.rate = rate;
@@ -28,6 +30,43 @@ public class Review {
         this.rate_at = rate_at;
         this.rate_by = rate_by;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public int getRate() {
+        return rate;
+    }
+
+    public String getReview() {
+        return review;
+    }
+
+    public Date getRate_at() {
+        return rate_at;
+    }
+
+    public String getRate_by() {
+        return rate_by;
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+                ", isbn='" + isbn + '\'' +
+                ", rate=" + rate +
+                ", review='" + review + '\'' +
+                ", rate_at=" + rate_at +
+                ", rate_by='" + rate_by + '\'' +
+                '}';
+    }
+
     public static List<Review> map(ResultSet result) throws SQLException {
         ResultSetMetaData metadata = result.getMetaData();
         List<Review> list = new ArrayList<>();
@@ -39,7 +78,6 @@ public class Review {
             Date rate_at = null;
             String rate_by = "";
             for(int i = 1; i<=metadata.getColumnCount(); i++){
-                System.out.println(metadata.getColumnName(i));
                 switch (metadata.getColumnName(i)){
                     case "id":
                         id = result.getInt(i);
@@ -56,14 +94,14 @@ public class Review {
                     case "rate_at":
                         rate_at = result.getDate(i);
                         break;
-                    case "rate_by":
+                    case "rated_by":
                         rate_by = result.getString(i);
                         break;
                     default:
                         System.out.println("false: "+result.getObject(i));
                 }
             }
-            Review tempReview = new Review(id, isbn, review, rate_at, rate_by);
+            Review tempReview = new Review(id, rate, isbn, review, rate_at, rate_by);
             list.add(tempReview);
         }
         return list;

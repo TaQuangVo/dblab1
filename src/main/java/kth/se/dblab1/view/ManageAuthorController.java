@@ -27,7 +27,9 @@ public class ManageAuthorController {
                     root.updateExistingAuthor(authorResult);
                 });
             } catch (BooksDbException e) {
-                root.showAlertAndWait(e.getMessage(), Alert.AlertType.ERROR);
+                Platform.runLater(()->{
+                    root.showAlertAndWait(e.getMessage(), Alert.AlertType.ERROR);
+                });
             }
         }).start();
     }
@@ -38,7 +40,9 @@ public class ManageAuthorController {
                 bookDb.insertAuthor(author);
                 onAuthorNameFieldChanged(author.getName());
             } catch (BooksDbException e) {
-                root.showAlertAndWait(e.getMessage(), Alert.AlertType.ERROR);
+                Platform.runLater(()->{
+                    root.showAlertAndWait(e.getMessage(), Alert.AlertType.ERROR);
+                });
             }
         }).start();
     }

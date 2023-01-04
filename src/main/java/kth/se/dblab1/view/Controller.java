@@ -60,7 +60,7 @@ public class Controller {
     protected void onSearchSelected(String searchFor, SearchMode mode) {
 
         try {
-            if (searchFor != null && searchFor.length() > 1) {
+            //if (searchFor != null && searchFor.length() > 1) {
                 List<Book> result = null;
                 switch (mode) {
                     case Title:
@@ -75,9 +75,7 @@ public class Controller {
                     default:
                         booksView.displayBooks(new ArrayList<>());
                 }
-            } else {
-                booksView.showAlertAndWait("Enter a search string!", WARNING);
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
             booksView.showAlertAndWait("Database error.",ERROR);
@@ -126,12 +124,8 @@ public class Controller {
         }).start();
     }
 
-
-
-
-
-
-
-    // TODO:
-    // Add methods for all types of user interaction (e.g. via  menus).
+    public void onDetailsSelected(Book book){
+        DetailsView dv = new DetailsView(book, booksDb);
+        dv.showAndWait();
+    }
 }

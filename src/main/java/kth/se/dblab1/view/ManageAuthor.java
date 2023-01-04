@@ -34,7 +34,14 @@ public class ManageAuthor extends Dialog {
             EventHandler<ActionEvent> addfunc = new EventHandler<>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    if(!authorToAdd.contains(author)){
+                    boolean exist = false;
+                    for(Author a : authorToAdd){
+                        if(a.getPersonId().equals(author.getPersonId())){
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if(!exist){
                         authorToAdd.add(author);
                         updateToAddAuthor(authorToAdd);
                     }
@@ -43,10 +50,12 @@ public class ManageAuthor extends Dialog {
             EventHandler<ActionEvent> removefunc = new EventHandler<>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    if(authorToAdd.contains(author)){
-                        boolean b = authorToAdd.remove(author);
-                        System.out.println(b);
-                        updateToAddAuthor(authorToAdd);
+                    for(Author a : authorToAdd){
+                        if(a.getPersonId().equals(author.getPersonId())){
+                            authorToAdd.remove(author);
+                            updateToAddAuthor(authorToAdd);
+                            break;
+                        }
                     }
                 }
             };
@@ -86,7 +95,7 @@ public class ManageAuthor extends Dialog {
         authorToAddListView.setPrefHeight(5 * 24 + 2);
         List<HBox> list = new ArrayList<>();
         for (Author a : authorToAdd) {
-            list.add(this.createHBox(a.getName() + "("+a.getPersonId()+")", "add ", a));
+            list.add(this.createHBox(a.getName() + "("+a.getPersonId()+")", "remove", a));
         }
         authorToAddObList = FXCollections.observableList(list);
         authorToAddListView.setItems(authorToAddObList);
@@ -109,7 +118,7 @@ public class ManageAuthor extends Dialog {
         createAuthorBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                if(!authorNameTf.getText().isBlank() && !authorIDTf.getText().isBlank()){
+                if(true){
                     Author newAuthor = new Author(authorNameTf.getText(), authorTeleTf.getText(), authorIDTf.getText());
                     ctl.onCreateNewAuthor(newAuthor);
                 }

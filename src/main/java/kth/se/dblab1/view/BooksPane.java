@@ -223,7 +223,21 @@ public class BooksPane extends VBox {
                 }
             }
         });
-        manageMenu.getItems().addAll(addItem, removeItem, updateItem);
+
+        MenuItem details = new MenuItem("details");
+        details.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+
+            public void handle(ActionEvent actionEvent) {
+                Book b = booksTable.getSelectionModel().getSelectedItem();
+                if(b == null)
+                    showAlertAndWait("Please select an item.", Alert.AlertType.WARNING);
+                else {
+                    controller.onDetailsSelected(b);
+                }
+            }
+        });
+        manageMenu.getItems().addAll(addItem, removeItem, updateItem, details);
 
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(fileMenu, searchMenu, manageMenu);

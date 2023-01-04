@@ -71,7 +71,7 @@ public class BookDbMySqlImpl implements BooksDbInterface{
     }
 
     public List<Book> searchBooksByAuthorName(String authorName, int limit) throws BooksDbException {
-        String queryString = "select * from book where id in (select book_id from writen_by where author_id = (select id from author where name like ?)) limit ?;";
+        String queryString = "select * from book where isbn in (select isbn from writen_by where person_id in (select person_id from author where name like ?)) limit ?;";
         try (PreparedStatement pstmt = conn.prepareStatement(queryString);) {
             pstmt.setString(1, authorName+"%");
             pstmt.setInt(2, limit);
