@@ -1,5 +1,9 @@
 package kth.se.dblab1.model;
 
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCursor;
+import org.bson.Document;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -58,6 +62,18 @@ public class Author {
             list.add(tempAuthor);
         }
         return list;
+    }
+
+    public static List<Author> mapFromFind(FindIterable find){
+        List<Author> authors = new ArrayList<>();
+        for (MongoCursor<Document> cursor = find.iterator(); cursor.hasNext();) {
+            Document doc = cursor.next();
+            System.out.println(doc.getString("name"));
+
+            Author author = new Author(doc.getString("name"),doc.getString("teleNo"),doc.getString("_id"));
+            authors.add(author);
+        }
+            return authors;
     }
 
     @Override

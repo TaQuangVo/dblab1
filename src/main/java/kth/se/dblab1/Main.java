@@ -29,6 +29,11 @@ public class Main extends Application {
         //BooksDbInterface booksDb = new BookDbMySqlImpl(); // model
         BookDbMongoImpl booksDb = new BookDbMongoImpl();
         booksDb.connect("book2");
+        //Author a = new Author("milad", "123", "0019");
+        //booksDb.insertAuthor(a);
+
+        //List<Author> authors = booksDb.getAuthorByPersonId("00192",1);
+        //System.out.println(authors);
         // Don't forget to connect to the db, somewhere...
 
         //Book book = new Book("11101911", "hej på dig 10", new Date(2000,12,12));
@@ -70,6 +75,8 @@ public class Main extends Application {
                 e.printStackTrace();
         }
         */
+
+
 
         launch(args);
     }
